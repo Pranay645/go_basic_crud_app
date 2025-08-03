@@ -14,12 +14,8 @@ var mu sync.Mutex
 
 func CarHandler(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
-	url := r.URL.String()
-	fmt.Println("URL: ", url)
-	fmt.Println("Path: ", path)
 	entity := strings.TrimPrefix(path, "/cars")
 	entity = strings.TrimPrefix(entity, "/")
-	fmt.Println("Entity: ", entity)
 	switch r.Method {
 	case "GET":
 		if entity != "" {
@@ -60,7 +56,6 @@ func createCar(r *http.Request, w http.ResponseWriter) {
 	}
 	car.Insert()
 	fmt.Printf("Car saved with ID %v", car.Id)
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(car)
 }
@@ -88,7 +83,6 @@ func getCar(id int, w http.ResponseWriter) {
 		http.Error(w, "Car not found", http.StatusNotFound)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(car)
 }
@@ -102,7 +96,6 @@ func updateCar(r *http.Request, w http.ResponseWriter) {
 		return
 	}
 	car.Update()
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(car)
 }

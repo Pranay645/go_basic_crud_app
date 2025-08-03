@@ -3,15 +3,20 @@ package main
 import (
 	"cars/pranay/github.com/config"
 	"cars/pranay/github.com/handlers"
+	"cars/pranay/github.com/middleware"
 	"fmt"
 	"net/http"
 )
 
 func main() {
 	config.ConnectDB()
-	http.HandleFunc("/cars", handlers.CarHandler)
-	http.HandleFunc("/cars/", handlers.CarHandler)
-	fmt.Println("Server is running on port 8080")
-	http.ListenAndServe(":5173", nil)
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/cars", handlers.CarHandler)
+	mux.HandleFunc("/cars/", handlers.CarHandler)
+	wrappedMux := middleware.Logger(mux)
+	wrappedMux = middleware.SecurityHeaders(wrappedMux)
+	fmt.Println("Server is running on port 5173")
+	http.ListenAndServe(":5173", wrappedMux)
 
 }
