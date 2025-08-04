@@ -7,12 +7,12 @@ import (
 )
 
 type Car struct {
-	Id    int64
-	Name  string
-	Model string
-	Year  int64
-	Brand string
-	Price float64
+	Id    int64   `json:"id"`
+	Name  string  `json:"name"`
+	Model string  `json:"model"`
+	Year  int64   `json:"year"`
+	Brand string  `json:"brand"`
+	Price float64 `json:"price"`
 }
 
 var Cars = make(map[int64]Car)

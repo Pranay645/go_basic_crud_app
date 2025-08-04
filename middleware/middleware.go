@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func Logger(next http.Handler) http.Handler {
@@ -16,12 +18,10 @@ func Logger(next http.Handler) http.Handler {
 		fmt.Printf("Request Completed | PATH: %v | METHOD: %v | DURATION: %v\n", r.URL.Path, r.Method, time.Since(start))
 	})
 }
-func SecurityHeaders(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Content-Security-Policy", "default-src 'self'")
-		w.Header().Set("X-Frame-Options", "Deny")
-		w.Header().Set("X-XSS-Protection", "1; mode=block")
-		next.ServeHTTP(w, r)
-	})
+func SecurityHeaders(c *fiber.Ctx) error {
+	c.Response().Header.Add("Content-Type", "application/json")
+	c.Response().Header.Add("Content-Security-Policy", "default-src 'self'")
+	c.Response().Header.Add("X-Frame-Options", "Deny")
+	c.Response().Header.Add("X-XSS-Protection", "1; mode=block")
+	return c.Next()
 }
